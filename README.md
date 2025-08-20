@@ -10,11 +10,11 @@ The following document defines an authentication mechanism to improve and supers
 sequenceDiagram
     Alice->>Carol: [SABM]
     Carol->>Alice: [UA]
-    Carol->>Alice: [I] r=<s_rand>,s=<pw_salt>,i=<Niter_pw>,f=pbkdf2,h=sha256\r
+    Carol->>Alice: [I] "\x12r=<s_rand>,s=<pw_salt>,i=<Niter_pw>,f=pbkdf2,h=sha256\r"
     alt Mutual authentication
-        Alice->>Carol: [I] r=<c_rand><s_rand>,p=<proof>\r
-        Carol->>Alice: [I] v=<verif>\r
-        Carol->>Alice: [I] qrz@host % \r
+        Alice->>Carol: [I] "r=<c_rand><s_rand>,p=<proof>\r"
+        Carol->>Alice: [I] "v=<verif>\r"
+        Carol->>Alice: [I] "qrz@host % \r"
     else Alice fails authentication
         Alice->>Carol: [I] r=<c_rand><s_rand>,p=<proof>\r
         Carol->>Alice: [FRMR] "Invalid credentials."
@@ -37,7 +37,6 @@ The following mechanism:
   3. Confirms completion of rekeying.
 
 ```mermaid
-
 sequenceDiagram
     Note over Alice,Carol: Establish an authenticated, user-interactive bearer
     Alice->>Carol: "opaque-passwd\r"
@@ -46,18 +45,20 @@ sequenceDiagram
     Carol->>Alice: KE2
     Alice->>Carol: KE3
     alt Auth and key exchange successful
-        Alice->>Carol: AES-GCM( "new_password\r", KEK)
+        Alice->>Carol: AES-GCM( "fmt=pwd,new_password\r", KEK)
         Carol->>Alice: "0 SUCCESS\r"
     else Password rotation fails
-        Alice->>Carol: AES-GCM( "new_password\r", KEK)
+        Alice->>Carol: AES-GCM( "fmt=pwd,new_password\r", KEK)
         Carol->>Alice: "1 FAIL\r"
     end
     Note over Alice,Carol: User-interactive session resumes
 ```
 TODO: flow graph and field specification
 
-### Passwords
-TODO
+### Cleartext Passwords
+When the transfered keying material is a cleartext password, the `fmt` attribute is set to `pwd`.
 
-### Baycomm authentication
-TODO
+Security Note: it is strongly advised to securely store the user's password using a publicly-recognized password storage function on the server side. Refer to HSCRAM for more details.
+
+### Baycom authentication
+When the transfered keying material is a baycom password, the `fmt` attribute is set to `baycom`.
