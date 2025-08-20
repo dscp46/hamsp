@@ -36,6 +36,24 @@ The following mechanism:
   2. Protects the new keying material with the `KEK` against eavesdropping and unintended modification (using an AEAD such as AES256-GCM or CHACHA20-POLY1305).
   3. Confirms completion of rekeying.
 
+```mermaid
+
+sequenceDiagram
+    Note over Alice,Carol: Establish an authenticated, user-interactive bearer
+    Alice->>Carol: "opaque-passwd\r"
+    Carol->>Alice: "\x11OPAQUE\r"
+    Alice->>Carol: KE1
+    Carol->>Alice: KE2
+    Alice->>Carol: KE3
+    alt Auth and key exchange successful
+        Alice->>Carol: AES-GCM( "new_password\r", KEK)
+        Carol->>Alice: "0 SUCCESS\r"
+    else Password rotation fails
+        Alice->>Carol: AES-GCM( "new_password\r", KEK)
+        Carol->>Alice: "1 FAIL\r"
+    end
+    Note over Alice,Carol: User-interactive session resumes
+```
 TODO: flow graph and field specification
 
 ### Passwords
