@@ -5,7 +5,7 @@ Most countries mandate licensed operators not to obscure the meaning of their ex
 The following document defines an authentication mechanism to improve and supersede CRAM-MD5, and a secure password rotation scheme to mutually authenticate a user and a remote entity to then securely transfer sensitive keying material, while ensuring its integrity.
 
 ## HSCRAM
-HSCRAM is inspired from the SCRAM-SHA256 mechanism. It implies the user name and slightly changes the exchange to reduce the number of required modem turnarounds from 4 to 3.
+HSCRAM is inspired from the SCRAM-SHA256 mechanism. By default, the remote party implies the user name from the AX.25 source callsign and slightly changes the exchange to reduce the number of required modem turnarounds from 4 to 3.
 
 ```mermaid
 sequenceDiagram
